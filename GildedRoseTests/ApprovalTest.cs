@@ -1,8 +1,11 @@
 ﻿using GildedRoseKata;
+using GildedRoseKata.App;
+using GildedRoseKata.Domain;
 
 using System;
 using System.IO;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using VerifyXunit;
@@ -16,10 +19,13 @@ public class ApprovalTest
     [Fact]
     public Task Foo()
     {
-        Item[] items = { new Item { Name = "foo", SellIn = 0, Quality = 0 } };
+        Item[] items = [
+            new Item("foo", 0, 0)
+        ];
+        
         GildedRose app = new GildedRose(items);
         app.UpdateQuality();
-        
+
         return Verifier.Verify(items);
     }
     

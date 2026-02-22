@@ -1,61 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using GildedRoseKata.App;
+using GildedRoseKata.Domain;
 
-namespace GildedRoseKata;
-
-public class Program
+namespace GildedRoseKata
 {
-    public static void Main(string[] args)
+    public class Program
     {
-        Console.WriteLine("OMGHAI!");
-
-        IList<Item> items = new List<Item>
+        public static void Main(string[] args)
         {
-            new Item {Name = "+5 Dexterity Vest", SellIn = 10, Quality = 20},
-            new Item {Name = "Aged Brie", SellIn = 2, Quality = 0},
-            new Item {Name = "Elixir of the Mongoose", SellIn = 5, Quality = 7},
-            new Item {Name = "Sulfuras, Hand of Ragnaros", SellIn = 0, Quality = 80},
-            new Item {Name = "Sulfuras, Hand of Ragnaros", SellIn = -1, Quality = 80},
-            new Item
-            {
-                Name = "Backstage passes to a TAFKAL80ETC concert",
-                SellIn = 15,
-                Quality = 20
-            },
-            new Item
-            {
-                Name = "Backstage passes to a TAFKAL80ETC concert",
-                SellIn = 10,
-                Quality = 49
-            },
-            new Item
-            {
-                Name = "Backstage passes to a TAFKAL80ETC concert",
-                SellIn = 5,
-                Quality = 49
-            },
-            // this conjured item does not work properly yet
-            new Item {Name = "Conjured Mana Cake", SellIn = 3, Quality = 6}
-        };
+            Console.WriteLine("OMGHAI!");
+            
+            var items = InitializeItems();
+            var app = new GildedRose(items);
 
-        var app = new GildedRose(items);
+            int days = args.Length > 0 ? int.Parse(args[0]) + 1 : 2;
 
-        int days = 2;
-        if (args.Length > 0)
-        {
-            days = int.Parse(args[0]) + 1;
+            RunSimulation(app, items, days);
         }
 
-        for (var i = 0; i < days; i++)
+        private static IList<Item> InitializeItems()
         {
-            Console.WriteLine("-------- day " + i + " --------");
-            Console.WriteLine("name, sellIn, quality");
-            for (var j = 0; j < items.Count; j++)
+            return new List<Item>
             {
-                Console.WriteLine(items[j].Name + ", " + items[j].SellIn + ", " + items[j].Quality);
+                new Item("+5 Dexterity Vest", 10, 20),
+                new Item("Aged Brie", 2, 0),
+                new Item("Elixir of the Mongoose", 5, 7),
+                new Item("Sulfuras, Hand of Ragnaros", 0, 80),
+                new Item("Sulfuras, Hand of Ragnaros", -1, 80),
+                new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20),
+                new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49),
+                new Item("Backstage passes to a TAFKAL80ETC concert", 5, 49),
+                new Item("Conjured Mana Cake", 3, 6)
+            };
+        }
+
+        private static void RunSimulation(GildedRose app, IList<Item> items, int days)
+        {
+            for (int day = 0; day < days; day++)
+            {
+                Console.WriteLine($"-------- day {day} --------");
+                PrintItems(items);
+                Console.WriteLine();
+                app.UpdateQuality();
             }
-            Console.WriteLine("");
-            app.UpdateQuality();
+        }
+
+        private static void PrintItems(IList<Item> items)
+        {
+            Console.WriteLine("name, sellIn, quality");
+            foreach (var item in items)
+            {
+                Console.WriteLine($"{item.Name}, {item.SellIn}, {item.Quality}");
+            }
         }
     }
 }
